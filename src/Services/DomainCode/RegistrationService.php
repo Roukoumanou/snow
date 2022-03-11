@@ -1,32 +1,45 @@
 <?php
 
-namespace App\Services\Implements;
+namespace App\Services\DomainCode;
 
 use App\Entity\Users;
+use App\Security\EmailVerifier;
+use App\Form\RegistrationFormType;
+use App\Services\Interfaces\IMailer;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Services\Interfaces\IRegistration;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
 class RegistrationService extends AbstractController implements IRegistration
 {
-    private $hasher;
+    private UserPasswordHasherInterface $hasher;
 
-    private $em;
+    private EntityManagerInterface $em;
 
-    private $translator;
+    private TranslatorInterface $translator;
+
+    private EmailVerifier $emailVerifier;
+
+    private IMailer $mailer;
 
     public function __construct(
-        UserPasswordHasherInterface $userPasswordHasher, 
+        UserPasswordHasherInterface $userPasswordHasher,
         EntityManagerInterface $entityManager,
-        TranslatorInterface $translator)
-    {
+        TranslatorInterface $translator,
+        EmailVerifier $emailVerifier,
+        IMailer $iMailer
+    ) {
         $this->hasher = $userPasswordHasher;
         $this->em = $entityManager;
         $this->translator = $translator;
+        $this->emailVerifier = $emailVerifier;
+        $this->mailer = $iMailer;
     }
 
     /**
@@ -40,11 +53,11 @@ class RegistrationService extends AbstractController implements IRegistration
         $user = new Users();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
-        
+
         if ($form->isSubmitted() && $form->isValid()) {
             // encode the plain password
             $user->setPassword(
-            $this->hasher->hashPassword(
+                $this->hasher->hashPassword(
                     $user,
                     $form->get('password')->getData()
                 )
@@ -53,14 +66,7 @@ class RegistrationService extends AbstractController implements IRegistration
             $this->em->persist($user);
             $this->em->flush();
 
-            // generate a signed url and email it to the user
-            $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
-                (new TemplatedEmail())
-                    ->from(new Address('info@snowtricks.com', '"SnowTrick"'))
-                    ->to($user->getEmail())
-                    ->subject('Please Confirm your Email')
-                    ->htmlTemplate('registration/confirmation_email.html.twig')
-            );
+            $this->mailer->sendMail($user);
 
             return $this->redirectToRoute('app_home');
         }
@@ -78,6 +84,20 @@ class RegistrationService extends AbstractController implements IRegistration
      */
     public function verifyUserEmail(Request $request): Response
     {
-        
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+        // validate email confirmation link, sets User::isVerified=true and persists
+        try {
+            $this->emailVerifier->handleEmailConfirmation($request, $this->getUser());
+        } catch (VerifyEmailExceptionInterface $exception) {
+            $this->addFlash('verify_email_error', $this->translator->trans($exception->getReason(), [], 'VerifyEmailBundle'));
+
+            return $this->redirectToRoute('app_register');
+        }
+
+        // @TODO Change the redirect on success and handle or remove the flash message in your templates
+        $this->addFlash('success', 'Votre adresse e-mail a été vérifiée.');
+
+        return $this->redirectToRoute('app_home');
     }
 }
