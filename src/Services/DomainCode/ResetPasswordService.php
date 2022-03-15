@@ -7,9 +7,9 @@ use App\Form\ChangePasswordFormType;
 use App\Services\Interfaces\IMailer;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Form\ResetPasswordRequestFormType;
-use App\Services\Interfaces\IResetPassword;
+use App\Services\Interfaces\MailerInterface;
+use App\Services\Interfaces\ResetPasswordInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -19,11 +19,11 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use SymfonyCasts\Bundle\ResetPassword\Controller\ResetPasswordControllerTrait;
 use SymfonyCasts\Bundle\ResetPassword\Exception\ResetPasswordExceptionInterface;
 
-class ResetPasswordService extends AbstractController implements IResetPassword
+class ResetPasswordService extends AbstractController implements ResetPasswordInterface
 {
     use ResetPasswordControllerTrait;
 
-    private IMailer $mailer;
+    private MailerInterface $mailer;
 
     private TranslatorInterface $translator;
 
@@ -34,7 +34,7 @@ class ResetPasswordService extends AbstractController implements IResetPassword
     private ResetPasswordHelperInterface $resetPasswordHelper;
 
     public function __construct(
-        IMailer $mailer,
+        MailerInterface $mailer,
         ResetPasswordHelperInterface $resetPasswordHelper,
         EntityManagerInterface $entityManager,
         TranslatorInterface $translatorInterface,
@@ -67,6 +67,7 @@ class ResetPasswordService extends AbstractController implements IResetPassword
         }
 
         return $this->render('reset_password/request.html.twig', [
+            'title' => 'Reset your password',
             'requestForm' => $form->createView(),
         ]);
     }
@@ -132,6 +133,7 @@ class ResetPasswordService extends AbstractController implements IResetPassword
         }
 
         return $this->render('reset_password/reset.html.twig', [
+            'title' => 'Reset your password',
             'resetForm' => $form->createView(),
         ]);
     }
@@ -145,6 +147,7 @@ class ResetPasswordService extends AbstractController implements IResetPassword
         }
 
         return $this->render('reset_password/check_email.html.twig', [
+            'title' => 'Password Reset Email Sent',
             'resetToken' => $resetToken,
         ]);
     }

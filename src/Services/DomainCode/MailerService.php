@@ -5,7 +5,7 @@ namespace App\Services\DomainCode;
 use App\Entity\Users;
 use App\Security\EmailVerifier;
 use Symfony\Component\Mime\Address;
-use App\Services\Interfaces\IMailer;
+use App\Services\Interfaces\MailerInterface as Imailer;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
 

@@ -8,15 +8,19 @@ use App\Form\RegistrationFormType;
 use App\Services\Interfaces\IMailer;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Services\Interfaces\IRegistration;
+use App\Services\Interfaces\MailerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use App\Services\Interfaces\FileUploaderInterface;
+use App\Services\Interfaces\RegistrationInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
-class RegistrationService extends AbstractController implements IRegistration
+class RegistrationService extends AbstractController implements RegistrationInterface
 {
     private UserPasswordHasherInterface $hasher;
 
@@ -26,20 +30,24 @@ class RegistrationService extends AbstractController implements IRegistration
 
     private EmailVerifier $emailVerifier;
 
-    private IMailer $mailer;
+    private MailerInterface $mailer;
+
+    private FileUploaderInterface $uploader;
 
     public function __construct(
         UserPasswordHasherInterface $userPasswordHasher,
         EntityManagerInterface $entityManager,
         TranslatorInterface $translator,
         EmailVerifier $emailVerifier,
-        IMailer $iMailer
+        MailerInterface $iMailer,
+        FileUploaderInterface $uploader
     ) {
         $this->hasher = $userPasswordHasher;
         $this->em = $entityManager;
         $this->translator = $translator;
         $this->emailVerifier = $emailVerifier;
         $this->mailer = $iMailer;
+        $this->uploader = $uploader;
     }
 
     /**
@@ -55,13 +63,16 @@ class RegistrationService extends AbstractController implements IRegistration
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            /** @var UploadedFile $brochureFile */
+            $avatar = $form->get('avatar')->getData();
+            $avatar = $this->uploader->uploadAvatar($avatar);
             // encode the plain password
             $user->setPassword(
                 $this->hasher->hashPassword(
                     $user,
                     $form->get('password')->getData()
                 )
-            );
+            )->setAvatar($avatar);
 
             $this->em->persist($user);
             $this->em->flush();
@@ -72,7 +83,8 @@ class RegistrationService extends AbstractController implements IRegistration
         }
 
         return $this->render('registration/register.html.twig', [
-            'registrationForm' => $form->createView(),
+            'title' => 'Inscription',
+            'registrationForm' => $form->createView()
         ]);
     }
 
@@ -95,7 +107,6 @@ class RegistrationService extends AbstractController implements IRegistration
             return $this->redirectToRoute('app_register');
         }
 
-        // @TODO Change the redirect on success and handle or remove the flash message in your templates
         $this->addFlash('success', 'Votre adresse e-mail a été vérifiée.');
 
         return $this->redirectToRoute('app_home');

@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Groups;
 use App\Entity\Users;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -9,7 +10,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
-    private $encoder;
+    private UserPasswordHasherInterface $encoder;
 
     public function __construct(UserPasswordHasherInterface $encoder)
     {
@@ -32,6 +33,32 @@ class AppFixtures extends Fixture
 
         $manager->persist($user);
 
+        foreach ($this->getGroups() as $group) {
+            $newGroupe = (new Groups())
+                ->setName($group);
+
+            $manager->persist($newGroupe);
+
+        }
+
         $manager->flush();
+    }
+
+    private function getGroups(): array
+    {
+        return [
+            'Noseslide',
+            'Pop/poper',
+            'Quarter pipe',
+            'Rodeoback / Rodeofront',
+            'Slopestyle',
+            'Twin tip',
+            'Underflip',
+            'Vitelli Turn',
+            'Wildcat',
+            'XL',
+            'Zeach',
+            '360, 540, 720, 1080'
+        ];
     }
 }

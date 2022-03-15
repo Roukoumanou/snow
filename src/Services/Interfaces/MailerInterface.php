@@ -4,7 +4,7 @@ namespace App\Services\Interfaces;
 
 use App\Entity\Users;
 
-interface IMailer
+interface MailerInterface
 {
     public function sendMail(Users $user): void;
 
