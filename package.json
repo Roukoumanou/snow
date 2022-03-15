@@ -20,5 +20,8 @@
     "description": "\"Projet de site communautaire Snow Tricks\"",
     "main": "index.js",
     "repository": "https://github.com/Roukoumanou/SnowTricks.git",
-    "author": "Roukoumanou <roukoumanouamidou@gmail.com>"
+    "author": "Roukoumanou <roukoumanouamidou@gmail.com>",
+    "dependencies": {
+        "jquery": "^3.6.0"
+    }
 }

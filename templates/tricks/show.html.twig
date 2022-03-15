@@ -1,0 +1,23 @@
+{% extends "base.html.twig" %}
+
+{% set image = trick.images|first %}
+{% if image %}
+    {% set cover = image.name %}
+{% else %}
+    {% set cover = 'me-622e7cad5b1e1.jpg' %}
+{% endif %}
+
+{% block body %}
+    <div class="container">
+        <div class="container">
+            <div class="card mb-3">
+                <img style="height: 20rem;" src="{{ asset('uploads/tricks/' ~ cover) }}" class="card-img-top" alt="Cover">
+                <div class="card-body">
+                  <h5 class="card-title">Card title</h5>
+                  <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                  <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
