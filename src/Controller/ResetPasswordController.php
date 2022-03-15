@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Services\Interfaces\IResetPassword;
+use App\Services\Interfaces\ResetPasswordInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,9 +14,9 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class ResetPasswordController extends AbstractController
 {
-    private $iResetPassword;
+    private ResetPasswordInterface $iResetPassword;
 
-    public function __construct(IResetPassword $iResetPassword)
+    public function __construct(ResetPasswordInterface $iResetPassword)
     {
         $this->iResetPassword = $iResetPassword;
     }
@@ -49,10 +49,5 @@ class ResetPasswordController extends AbstractController
     public function reset(Request $request, string $token = null): Response
     {
         return $this->iResetPassword->reset($request, $token);
-    }
-
-    private function processSendingPasswordResetEmail(string $emailFormData): RedirectResponse
-    {
-        return $this->iResetPassword->processSendingPasswordResetEmail($emailFormData);
     }
 }

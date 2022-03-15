@@ -5,7 +5,7 @@ namespace App\Services\Interfaces;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-interface IRegistration
+interface RegistrationInterface
 {
     public function register(Request $request): Response;
 

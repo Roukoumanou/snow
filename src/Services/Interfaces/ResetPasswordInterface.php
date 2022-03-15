@@ -6,7 +6,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
-interface IResetPassword
+interface ResetPasswordInterface
 {
     public function request(Request $request): Response;
 
