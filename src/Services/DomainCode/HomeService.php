@@ -16,13 +16,10 @@ class HomeService extends AbstractController implements HomeInterface
         $this->tricksrepository = $tricksrepository;
     }
 
-    public function home(Request $request): Response
+    public function home(Request $request): ?array
     {
         $tricks = $this->tricksrepository->findAll();
         
-        return $this->render('home/index.html.twig', [
-            'title' => 'Liste des Figures',
-            'tricks' => $tricks
-        ]);
+        return $tricks;
     }
 }

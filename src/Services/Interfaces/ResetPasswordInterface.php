@@ -2,17 +2,12 @@
 
 namespace App\Services\Interfaces;
 
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+use App\Entity\Users;
+use Symfony\Component\Form\Form;
 
 interface ResetPasswordInterface
 {
-    public function request(Request $request): Response;
+    public function reset(Users $user, Form $form, $token = null): bool;
 
-    public function checkEmail(): Response;
-
-    public function reset(Request $request, string $token = null): Response;
-
-    public function processSendingPasswordResetEmail(string $emailFormData): RedirectResponse;
+    public function processSendingPasswordResetEmail(string $emailFormData): ?Users;
 }

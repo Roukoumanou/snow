@@ -2,18 +2,15 @@
 
 namespace App\Services\DomainCode;
 
-use App\Entity\Images;
 use App\Entity\Tricks;
-use App\Form\TrickFormType;
+use App\Entity\Users;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Services\Interfaces\TricksInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use App\Services\Interfaces\TricksImagesUploaderInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Form;
 
-class TricksService extends AbstractController implements TricksInterface
+class TricksService implements TricksInterface
 {
     private EntityManagerInterface $em;
 
@@ -22,66 +19,99 @@ class TricksService extends AbstractController implements TricksInterface
     public function __construct(
         EntityManagerInterface $em,
         TricksImagesUploaderInterface $uploader
-    )
-    {
+    ){
         $this->em = $em;
         $this->uploader = $uploader;
     }
 
-    public function new(Request $request): Response
+    public function new(Tricks $trick, Form $form, Users $user): bool
     {
-        $trick = new Tricks();
-
-        $form = $this->createForm(TrickFormType::class, $trick);
-        $form->handleRequest($request);
-
-        if($form->isSubmitted() && $form->isValid()){
-            if (count($form->get('images')->getData()) > 0) {
-                foreach ($form->get('images')->getData() as $value) {
-                    /** @var UploadedFile $image */
-                    $image = $value->getFileType();
-                    $fileName = $this->uploader->upload($image);
-                    
-                        $value->setName($fileName)
+        // Gestion des images 
+        if (count($form->get('images')->getData()) > 0) {
+            foreach ($form->get('images')->getData() as $value) {
+                /** @var UploadedFile $image */
+                $image = $value->getFileType();
+                $fileName = $this->uploader->upload($image);
+                
+                    $value->setName($fileName)
                         ->setTrick($trick);
 
-                    $this->em->persist($value);
-                }
-                
-                $trick->setUser($this->getUser());
-                $this->em->persist($trick);
-                $this->em->flush();
+                $this->em->persist($value);
             }
-
-            $this->addFlash(
-                'success', 'La figure a corrèctement été rajouté'
-            );
-
-            return $this->redirectToRoute('app_home');
+            
         }
 
-        return $this->render('tricks/new.html.twig', [
-            'title' => "Ajouter une figure",
-            'form' => $form->createView()
-        ]);
+        // gestion des videos
+        if (count($form->get('videos')->getData()) > 0) {
+            foreach ($form->get('videos')->getData() as $value) {
+                
+                $value->setTrick($trick);
+
+                $this->em->persist($value);
+            }
+            
+        }
+
+        $trick->setUser($user);
+        $this->em->persist($trick);
+        $this->em->flush();
+
+        return true;
     }
 
-    public function show(Tricks $trick): Response
+    public function update(Tricks $trick, Form $form): bool
     {
-        return $this->render('tricks/show.html.twig', [
-            'title' => $trick->getName(),
-            'images' => $trick->getImages(),
-            'trick' => $trick
-        ]);
+        // Gestion des images 
+        if (count($form->get('images')->getData()) > 0) {
+            foreach ($form->get('images')->getData() as $value) {
+                /** @var UploadedFile $image */
+                $image = $value->getFileType();
+                $fileName = $this->uploader->upload($image);
+                
+                    $value->setName($fileName)
+                        ->setTrick($trick);
+
+                $this->em->persist($value);
+            }
+            
+        }
+
+        // gestion des videos
+        if (count($form->get('videos')->getData()) > 0) {
+            foreach ($form->get('videos')->getData() as $value) {
+                
+                $value->setTrick($trick);
+
+                $this->em->persist($value);
+            }
+            
+        }
+
+        $this->em->flush();
+        
+        return true;
     }
 
-    public function update(Request $request, Tricks $trick): Response
+    public function delete(Tricks $trick): bool
     {
-        return $this->render('');
-    }
+        // Suppression des images liées
+        if (count($trick->getImages()) > 0) {
+            foreach ($trick->getImages() as $image) {
+                $this->em->remove($image);
+                unlink(dirname(__DIR__, 3).'/public/uploads/tricks/'.$image->getName());
+            }
+        }
 
-    public function delete(Tricks $trick): Response
-    {
-        return $this->render('');
+        // Suppression des vidéos liées
+        if (count($trick->getVideos()) > 0) {
+            foreach ($trick->getVideos() as $video) {
+                $this->em->remove($video);
+            }
+        }
+
+        $this->em->remove($trick);
+        $this->em->flush();
+
+        return true;
     }
 }

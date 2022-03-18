@@ -2,12 +2,10 @@
 
 namespace App\Services\Interfaces;
 
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use App\Entity\Users;
+use Symfony\Component\Form\Form;
 
 interface RegistrationInterface
 {
-    public function register(Request $request): Response;
-
-    public function verifyUserEmail(Request $request): Response;
+    public function register(Form $form, Users $user): bool;
 }

@@ -9,7 +9,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -27,8 +26,15 @@ class TrickFormType extends AbstractType
             ])
             ->add('description', TextareaType::class, ['label' => 'Description'])
             ->add('images', CollectionType::class, [
-                'label' => 'Ajouter une image',
+                'label' => 'Ajouter des images',
                 'entry_type' => ImagesFormType::class,
+                'prototype' => true,
+                'allow_add' => true,
+                'allow_delete' => true,
+            ])
+            ->add('videos', CollectionType::class, [
+                'label' => 'Ajouter des videos',
+                'entry_type' => VideosFormType::class,
                 'prototype' => true,
                 'allow_add' => true,
                 'allow_delete' => true,
