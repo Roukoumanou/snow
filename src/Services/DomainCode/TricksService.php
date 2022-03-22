@@ -61,32 +61,6 @@ class TricksService implements TricksInterface
 
     public function update(Tricks $trick, Form $form): bool
     {
-        // Gestion des images 
-        if (count($form->get('images')->getData()) > 0) {
-            foreach ($form->get('images')->getData() as $value) {
-                /** @var UploadedFile $image */
-                $image = $value->getFileType();
-                $fileName = $this->uploader->upload($image);
-                
-                    $value->setName($fileName)
-                        ->setTrick($trick);
-
-                $this->em->persist($value);
-            }
-            
-        }
-
-        // gestion des videos
-        if (count($form->get('videos')->getData()) > 0) {
-            foreach ($form->get('videos')->getData() as $value) {
-                
-                $value->setTrick($trick);
-
-                $this->em->persist($value);
-            }
-            
-        }
-
         $this->em->flush();
         
         return true;
