@@ -2,20 +2,34 @@
 
 namespace App\Controller;
 
-use App\Services\Interfaces\IRegistration;
+use App\Entity\Users;
+use App\Security\EmailVerifier;
+use App\Form\RegistrationFormType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Services\Interfaces\RegistrationInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
 class RegistrationController extends AbstractController
 {
     private RegistrationInterface $iRegistration;
 
-    public function __construct(RegistrationInterface $iRegistartion)
-    {
+    private TranslatorInterface $translator;
+
+    private EmailVerifier $emailVerifier;
+
+    public function __construct(
+        RegistrationInterface $iRegistartion,
+        TranslatorInterface $translator,
+        EmailVerifier $emailVerifier
+    ){
         $this->iRegistration = $iRegistartion;
+        $this->translator = $translator;
+        $this->emailVerifier = $emailVerifier;
+        
     }
 
     /**
@@ -26,7 +40,22 @@ class RegistrationController extends AbstractController
      */
     public function register(Request $request): Response
     {
-        return $this->iRegistration->register($request);
+        $user = new Users();
+        $form = $this->createForm(RegistrationFormType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->iRegistration->register($form, $user);
+
+            $this->addFlash('success', 'Bienvenue parmi nous. Un mail vient de vous être envoyé');
+
+            return $this->redirectToRoute('app_home');
+        }
+
+        return $this->render('registration/register.html.twig', [
+            'title' => 'Inscription',
+            'registrationForm' => $form->createView()
+        ]);
     }
 
     /**
@@ -37,6 +66,19 @@ class RegistrationController extends AbstractController
      */
     public function verifyUserEmail(Request $request): Response
     {
-        return $this->iRegistration->verifyUserEmail($request);
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+        // validate email confirmation link, sets User::isVerified=true and persists
+        try {
+            $this->emailVerifier->handleEmailConfirmation($request, $this->getUser());
+        } catch (VerifyEmailExceptionInterface $exception) {
+            $this->addFlash('verify_email_error', $this->translator->trans($exception->getReason(), [], 'VerifyEmailBundle'));
+
+            return $this->redirectToRoute('app_register');
+        }
+
+        $this->addFlash('success', 'Votre adresse e-mail a été vérifiée.');
+
+        return $this->redirectToRoute('app_home');
     }
 }

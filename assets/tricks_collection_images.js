@@ -26,3 +26,31 @@ function widgetsCounter(){
 
 widgetsCounter();
 handleDeleteButton();
+
+// Gestion des videos
+$('#add-video').click(function(){
+    const index = +$('#v-widgets-counter').val();
+    const tmpl = $('#trick_form_videos').data('prototype').replace(/__name__/g, index);
+
+    $('#trick_form_videos').append(tmpl);
+
+    $('#v-widgets-counter').val(index + 1);
+
+    vHandleDeleteButton();
+});
+
+function vHandleDeleteButton(){
+    $('button[data-action="delete"]').click(function(){
+        const target = this.dataset.target;
+        
+        $(target).remove();
+    })
+}
+
+function vWidgetsCounter(){
+    const count = $('#trick_form_videos div.form-group').length;
+    $('#v-widgets-counter').val(count);
+}
+
+vWidgetsCounter();
+vHandleDeleteButton();

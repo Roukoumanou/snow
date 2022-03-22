@@ -4,8 +4,19 @@
 
 {% block body %}
     <div class="container">
+        {% include "partials/collections.html.twig" %}
         {{ form_start(form) }}
-            {{ form_widget(form) }}
+        <div class="row mb-3">
+            <div class="col-12 mb-3">
+                {{ form_widget(form.name) }}
+            </div>
+            <div class="col-12 mb-3">
+                {{ form_widget(form.description) }}
+            </div>
+            <div class="col-12 mb-3">
+                {{ form_widget(form.group) }}
+            </div>
+        </div>
             <button type="submit" class="btn btn-primary">Sauver</button>
         {{ form_end(form) }}
     </div>

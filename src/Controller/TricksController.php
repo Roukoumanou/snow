@@ -2,7 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Comments;
 use App\Entity\Tricks;
+use App\Form\CommentFormType;
+use App\Form\TrickFormType;
+use App\Services\Interfaces\CommentsInterface;
 use App\Services\Interfaces\TricksInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,27 +34,105 @@ class TricksController extends AbstractController
      */
     public function newTrick(Request $request): Response
     {
-        return $this->iTricks->new($request);
+        $trick = new Tricks();
+
+        $form = $this->createForm(TrickFormType::class, $trick);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+            
+            $this->iTricks->new($trick, $form, $this->getUser());
+
+            $this->addFlash(
+                'success', 'La figure a corrèctement été rajouté'
+            );
+
+            return $this->redirectToRoute('app_home');
+        }
+        
+        return $this->render('tricks/new.html.twig', [
+            'title' => "Ajouter une figure",
+            'form' => $form->createView()
+        ]);
     }
 
     /**
      * @Route("/trick-{id}-show", name="trick_show", methods={"GET", "POST"})
      *
+     * @param Request $request
      * @param Tricks $trick
      * @return Response
      */
-    public function showTrick(Tricks $trick): Response
+    public function showTrick(Request $request, Tricks $trick, CommentsInterface $iComment): Response
     {
-        return $this->iTricks->show($trick);
+        $comment = new Comments();
+        $form = $this->createForm(CommentFormType::class, $comment);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $iComment->addComment($comment, $trick, $this->getUser());
+
+            $this->addFlash('success', 'Commentaire ajouté avec succès');
+
+            return $this->redirectToRoute('trick_show', ['id' => $trick->getId()]);
+        }
+
+        return $this->render('tricks/show.html.twig', [
+            'title' => $trick->getName(),
+            'images' => $trick->getImages(),
+            'trick' => $trick,
+            'form' => $form->createView()
+        ]);
     }
 
+    /**
+     * @Route("/trick-{id}-update", name="trick_update", methods={"GET", "POST"})
+     *
+     * @param Request $request
+     * @param Tricks $trick
+     * @return Response
+     */
     public function updateTrick(Request $request, Tricks $trick): Response
     {
-        return $this->iTricks->update($request, $trick);
+        $form = $this->createForm(TrickFormType::class, $trick, ['status' => 'update']);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+
+            $this->iTricks->update($trick, $form);
+
+            $this->addFlash(
+                'success', 'La figure a corrèctement été modifié'
+            );
+
+            return $this->redirectToRoute('app_home');
+        } 
+
+        return $this->render('tricks/update.html.twig', [
+            'title' => $trick->getName(),
+            'form' => $form->createView(),
+            'trick' => $trick
+        ]);
     }
 
-    public function delete(Tricks $trick): Response
+    /**
+     * @Route("/trick-{id}-delete", name="trick_delete", methods={"POST"})
+     *
+     * @param Request $request
+     * @param Tricks $trick
+     * @return Response
+     */
+    public function delete(Request $request, Tricks $trick): Response
     {
-        return $this->iTricks->delete($trick);
+        if ($this->isCsrfTokenValid('delete' . $trick->getId(), $request->request->get('_token'))) {
+            $this->iTricks->delete($trick);
+
+            $this->addFlash(
+                'success',
+                'La La figure a été correctement supprimée'
+            );
+
+            return $this->redirectToRoute('app_home');
+        }
     }
 }

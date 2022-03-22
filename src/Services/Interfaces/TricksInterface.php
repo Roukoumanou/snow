@@ -3,16 +3,14 @@
 namespace App\Services\Interfaces;
 
 use App\Entity\Tricks;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use App\Entity\Users;
+use Symfony\Component\Form\Form;
 
 interface TricksInterface
 {
-    public function new(Request $request): Response;
+    public function new(Tricks $trick, Form $form, Users $user): bool;
 
-    public function show(Tricks $trick): Response;
+    public function update(Tricks $trick, Form $form): bool;
 
-    public function update(Request $request, Tricks $trick): Response;
-
-    public function delete(Tricks $trick): Response;
+    public function delete(Tricks $trick): bool;
 }

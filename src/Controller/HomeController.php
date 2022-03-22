@@ -25,6 +25,11 @@ class HomeController extends AbstractController
      */
     public function index(Request $request): Response
     {
-        return $this->iHome->home($request);
+        $tricks = $this->iHome->home($request);
+
+        return $this->render('home/index.html.twig', [
+            'title' => 'Liste des Figures',
+            'tricks' => $tricks
+        ]);
     }
 }
