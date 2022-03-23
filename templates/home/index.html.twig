@@ -2,7 +2,7 @@
 
 {% block body %}
     <div class="container">
-        <div class="row">
+        <div class="row" id="tricks">
             {% for trick in tricks %}
                 {% set image = trick.images|first %}
             {% if image %}
@@ -10,7 +10,7 @@
             {% else %}
                 {% set cover = 'me-622e7cad5b1e1.jpg' %}
             {% endif %}
-                <div class="col-md-3">
+                <div class="col-md-3 mb-2">
                     <div class="card">
                         <img style="height: 15rem;" src="{{ asset('uploads/tricks/' ~ cover) }}" class="card-img-top" alt="Image de la figure {{ trick.name }}">
                         
@@ -19,8 +19,10 @@
     
                             {% if app.user %}
                                 <div class="row">
-                                    <div class="col">
-                                        <a href="{{ path('trick_update', {id: trick.id}) }}" class="card-link">M</a>
+                                    <div class="col mt-3">
+                                        <a href="{{ path('trick_update', {id: trick.id}) }}" class="card-link">
+                                            <i class="fa-solid fa-pen"></i>
+                                        </a>
                                     </div>
                                     <div class="col">
                                         {% include "tricks/form/delete.html.twig" %}
