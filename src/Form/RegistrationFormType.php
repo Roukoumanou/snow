@@ -17,17 +17,29 @@ class RegistrationFormType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'label' => 'Username'
+                'label' => 'Nom d\'utilisation',
+                'attr' => [
+                    'placeholder' => 'Nom d\'utilisation'
+                ]
             ])
             ->add('email', EmailType::class, [
-                'label' => 'Email'
+                'label' => 'Email',
+                'attr' => [
+                    'placeholder' => 'Email'
+                ]
             ])
             ->add('avatar', FileType::class, [
                 'label' => 'Image de profile',
-                'required' => false
+                'required' => false,
+                'attr' => [
+                    'placeholder' => 'Image de profile'
+                ]
             ])
             ->add('password', PasswordType::class, [
-                'label' => 'Password'
+                'label' => 'Mot de passe',
+                'attr' => [
+                    'placeholder' => 'Mot de passe'
+                ]
             ])
         ;
     }
