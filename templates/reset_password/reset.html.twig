@@ -1,8 +1,19 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    {{ form_start(resetForm) }}
-        {{ form_row(resetForm.plainPassword) }}
-        <button class="btn btn-primary">Reset password</button>
-    {{ form_end(resetForm) }}
+<div class="container">
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            {{ form_start(resetForm) }}
+                {{ form_row(resetForm.plainPassword) }}
+                <button class="btn btn-primary">Réinitialiser</button>
+            {{ form_end(resetForm) }}
+        </div>
+        <div class="col-md-4">
+            <a class="btn btn-link d-block d-sm-none" href="{{ path('app_register') }}">S'inscrire</a>
+            <a class="btn btn-link d-block d-sm-none" href="{{ path('app_forgot_password_request') }}">Mot de passe oublié?</a>
+        </div>
+    </div>
+</div>
 {% endblock %}

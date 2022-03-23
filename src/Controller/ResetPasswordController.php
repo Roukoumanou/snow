@@ -62,7 +62,7 @@ class ResetPasswordController extends AbstractController
         }
 
         return $this->render('reset_password/request.html.twig', [
-            'title' => 'Reset your password',
+            'title' => 'Réinitialisez votre mot de passe',
             'requestForm' => $form->createView(),
         ]);
     }
@@ -81,7 +81,7 @@ class ResetPasswordController extends AbstractController
         }
 
         return $this->render('reset_password/check_email.html.twig', [
-            'title' => 'Password Reset Email Sent',
+            'title' => 'E-mail de réinitialisation du mot de passe envoyé',
             'resetToken' => $resetToken,
         ]);
     }
@@ -155,6 +155,7 @@ class ResetPasswordController extends AbstractController
 
         // Do not reveal whether a user account was found or not.
         if (!$user) {
+            $this->addFlash('info', 'Vérifiez votre email');
             return $this->redirectToRoute('app_check_email');
         }
 
@@ -168,6 +169,8 @@ class ResetPasswordController extends AbstractController
         // Store the token object in session for retrieval in check-email route.
         $this->setTokenObjectInSession($resetToken);
 
-        return $this->redirectToRoute('app_check_email');
+        $this->addFlash('success', 'Email Envoyé avec succès');
+
+        return $this->redirectToRoute('app_home');
     }
 }
