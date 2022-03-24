@@ -55,11 +55,13 @@ class ImagesController extends AbstractController
     public function delete(Request $request, Images $image): Response
     {
         if ($this->isCsrfTokenValid('delete' . $image->getId(), $request->request->get('_token'))) {
+            $lastImg = $image->getId();
+
             $this->iIMages->deleteImage($image);
 
             $this->addFlash(
                 'success',
-                'L\'image n° '. $image->getId() .' a été correctement supprimée'
+                'L\'image n° '. $lastImg .' a été correctement supprimée'
             );
 
             return $this->redirectToRoute('trick_update', ['id' => $image->getTrick()->getId()]);
