@@ -1,0 +1,12 @@
+{% if app.user %}
+    <div class="row">
+        <div class="col mt-2">
+            <a href="{{ path('trick_update', {id: trick.id}) }}" class="card-link">
+                <i class="fa-solid fa-pen"></i>
+            </a>
+        </div>
+        <div class="col">
+            {% include "tricks/form/delete.html.twig" %}
+        </div>
+    </div>
+{% endif %}
