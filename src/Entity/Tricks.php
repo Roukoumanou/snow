@@ -46,7 +46,7 @@ class Tricks
      * @Assert\NotBlank(message="Cet champs est obligatoire")
      * @Assert\Length(
      *      min=2,
-     *      max=250,
+     *      max=2000,
      *      minMessage="Cet champs doit contenir minimum {{ limit }} caractères",
      *      maxMessage="Cet champs ne peut pas dépasser {{ limit }} caractères"
      * )
@@ -77,6 +77,7 @@ class Tricks
 
     /**
      * @ORM\OneToMany(targetEntity=Videos::class, mappedBy="trick", orphanRemoval=true)
+     * @Assert\Valid()
      */
     private $videos;
 

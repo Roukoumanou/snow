@@ -26,6 +26,8 @@ class TricksVideosManagementService implements TricksVideosManagementInterface
     public function deleteVideo(Videos $video): bool
     {
         $this->em->remove($video);
+        $this->em->flush();
+        
         return true;
     }
 }

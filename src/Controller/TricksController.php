@@ -81,6 +81,7 @@ class TricksController extends AbstractController
             'title' => $trick->getName(),
             'images' => $trick->getImages(),
             'trick' => $trick,
+            'comments' => $trick->getComments(),
             'form' => $form->createView()
         ]);
     }
