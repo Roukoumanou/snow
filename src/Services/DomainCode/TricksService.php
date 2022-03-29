@@ -61,6 +61,8 @@ class TricksService implements TricksInterface
 
     public function update(Tricks $trick, Form $form): bool
     {
+        $trick->setUpdatedAt(new \DateTimeImmutable());
+        
         $this->em->flush();
         
         return true;
