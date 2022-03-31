@@ -125,12 +125,14 @@ class TricksController extends AbstractController
      */
     public function delete(Request $request, Tricks $trick): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $trick->getId(), $request->request->get('_token'))) {
+        $tokenId = (string) 'delete' . $trick->getId();
+
+        if ($this->isCsrfTokenValid($tokenId, (string) $request->request->get('_token'))) {
             $this->iTricks->delete($trick);
 
             $this->addFlash(
                 'success',
-                'La La figure a été correctement supprimée'
+                'La figure a été correctement supprimée'
             );
 
             return $this->redirectToRoute('app_home');
