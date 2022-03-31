@@ -6,6 +6,7 @@ use App\Entity\Tricks;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -16,6 +17,8 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class TricksRepository extends ServiceEntityRepository
 {
+    public const PAGINATOR_PER_PAGE = 4;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Tricks::class);
@@ -43,6 +46,23 @@ class TricksRepository extends ServiceEntityRepository
         if ($flush) {
             $this->_em->flush();
         }
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @param int $offset
+     * @return Paginator
+     */
+    public function getPaginationTricks(int $offset): Paginator
+    {
+        $query = $this->createQueryBuilder('t')
+            ->orderBy('t.createdAt', 'DESC')
+            ->setMaxResults(self::PAGINATOR_PER_PAGE)
+            ->setFirstResult($offset)
+            ->getQuery();
+
+        return new Paginator($query);
     }
 
     // /**

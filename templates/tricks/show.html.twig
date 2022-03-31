@@ -1,6 +1,6 @@
 {% extends "base.html.twig" %}
 
-{% set image = trick.images|first %}
+{% set image     = trick.images|first %}
 
 {% if image %}
     {% set cover = image.name %}
@@ -50,25 +50,41 @@
                 {% endif %}
             </div>
         </div>
+        
         <hr>
-
         <div class="container">
             <h5 class="m2">Discussion</h5>
-        <div class="row bg-light m-3">
-            {% for comment in comments %}
-            {% set author = comment.user %}
-                <div class="row border border-secondary border-1 p-2 mb-2">
-                    <div class="col-2">
-                        <img src="{{ asset('uploads/avatar/' ~ author.avatar) }}" class="rounded-circle" style="width: 50px;"
-                        alt="Avatar" />
+            <div class="row bg-light m-3">
+                {% for comment in comments %}
+                {% set author = comment.user %}
+                    <div class="row border border-secondary border-1 p-2 mb-2">
+                        <div class="col-2">
+                            <img src="{{ asset('uploads/avatar/' ~ author.avatar) }}" class="rounded-circle" style="width: 50px;"
+                            alt="Avatar" />
+                        </div>
+                        <div class="col-10">
+                            <p class="text-info mb-0 mt-0">{{ comment.user.name|title }} a écrit <span class="text-muted">le {{ comment.createdAt|date('d-m-Y') }}</span></p>
+                            {{ comment.message|nl2br }}
+                        </div>
                     </div>
-                    <div class="col-10">
-                        <p class="text-info mb-0 mt-0">{{ comment.user.name|title }} a écrit <span class="text-muted">le {{ comment.createdAt|date('d-m-Y') }}</span></p>
-                        {{ comment.message|nl2br }}
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
+                {% endfor %}
+            </div>
+
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    {% if previous >= 0 %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ path('trick_show', {id: trick.id, offset: previous }) }}">Précédent</a>
+                        </li>
+                    {% endif %}
+
+                    {% if next < comments|length %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ path('trick_show', {id: trick.id, offset: next }) }}">Suivant</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
         </div>
     </div>
 {% endblock %}

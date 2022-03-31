@@ -2,13 +2,14 @@
 
 namespace App\Controller;
 
-use App\Entity\Comments;
 use App\Entity\Tricks;
-use App\Form\CommentFormType;
+use App\Entity\Comments;
 use App\Form\TrickFormType;
-use App\Services\Interfaces\CommentsInterface;
+use App\Form\CommentFormType;
+use App\Repository\CommentsRepository;
 use App\Services\Interfaces\TricksInterface;
 use Symfony\Component\HttpFoundation\Request;
+use App\Services\Interfaces\CommentsInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -65,6 +66,9 @@ class TricksController extends AbstractController
      */
     public function showTrick(Request $request, Tricks $trick, CommentsInterface $iComment): Response
     {
+        $offset = max(0, $request->query->getInt('offset', 0));
+        $comments = $iComment->getComments($trick, $offset);
+        
         $comment = new Comments();
         $form = $this->createForm(CommentFormType::class, $comment);
         $form->handleRequest($request);
@@ -81,8 +85,10 @@ class TricksController extends AbstractController
             'title' => $trick->getName(),
             'images' => $trick->getImages(),
             'trick' => $trick,
-            'comments' => $trick->getComments(),
-            'form' => $form->createView()
+            'comments' => $comments,
+            'form' => $form->createView(),
+            'previous' => $offset - CommentsRepository::PAGINATOR_PER_PAGE,
+            'next' => min(count($comments), $offset + CommentsRepository::PAGINATOR_PER_PAGE),
         ]);
     }
 
