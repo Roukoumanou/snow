@@ -27,7 +27,6 @@ class Videos
      *      minMessage="Cet champs doit contenir minimum {{ limit }} caractères",
      *      maxMessage="Cet champs ne peut pas dépasser {{ limit }} caractères"
      * )
-     * @Assert\Url(message="Cet email n'est pas valide")
      */
     private $name;
 

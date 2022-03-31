@@ -1,12 +1,12 @@
 <div class="row mt-1">
-    <div class="col-md-6">
+    <div class="col-md-6 d-none d-sm-block">
         <div class="row">
             {% for image in trick.images %}
                 <div class="col-md-4">
                     <img style="width: 150px; height: 100px;" src="{{ asset('uploads/tricks/' ~ image.name) }}" alt="{{image.name}}">
                     
                     {% if app.user %}
-                        <div class="row">
+                        <div class="row mt-0">
                             <div class="col mt-3">
                                 <a href="{{ path('update_img', {id: image.id}) }}" class="card-link">
                                     <i class="fa-solid fa-pen"></i>
@@ -21,11 +21,23 @@
             {% endfor %}
         </div>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-6 d-none d-sm-block">
         <div class="row">
             {% for video in trick.videos %}
             <div class="col-md-4">
-                <iframe width="150" height="100" src="https://www.youtube.com/embed/y881t8ilMyc" frameborder="0" allowfullscreen></iframe>
+                <iframe width="150" height="100" src="https://www.youtube.com/embed/{{video.name}}" frameborder="0" allowfullscreen></iframe>
+                {% if app.user %}
+                    <div class="row">
+                        <div class="col mt-3">
+                            <a href="{{ path('update_video', {id: video.id}) }}" class="card-link">
+                                <i class="fa-solid fa-pen"></i>
+                            </a>
+                        </div>
+                        <div class="col">
+                            {% include "videos/form/delete.html.twig" %}
+                        </div>
+                    </div>
+                {% endif %}
             </div>
             {% endfor %}
         </div>
