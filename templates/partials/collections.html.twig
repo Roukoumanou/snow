@@ -3,7 +3,27 @@
         <div class="row">
             {% for image in trick.images %}
                 <div class="col-md-4">
-                    <img style="width: 150px; height: 100px;" src="{{ asset('uploads/tricks/' ~ image.name) }}" alt="{{image.name}}">
+                    <div data-bs-toggle="modal" data-bs-target="#exampleModal{{image.id}}">
+                        <img style="width: 150px; height: 100px;" src="{{ asset('uploads/tricks/' ~ image.name) }}" alt="{{image.name}}">
+                    </div>
+
+                    <!-- ModalIMG -->
+                    <div class="modal fade" id="exampleModal{{image.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">{{image.name}}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <img src="{{ asset('uploads/tricks/' ~ image.name) }}" class="img-fluid" alt="{{ image.name }}">
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     
                     {% include "partials/update_btn.html.twig" %}
                 </div>
@@ -54,5 +74,4 @@
         </div>
         </div>
     </div>
-  
 </div>
