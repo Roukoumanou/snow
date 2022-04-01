@@ -5,18 +5,7 @@
                 <div class="col-md-4">
                     <img style="width: 150px; height: 100px;" src="{{ asset('uploads/tricks/' ~ image.name) }}" alt="{{image.name}}">
                     
-                    {% if app.user %}
-                        <div class="row mt-0">
-                            <div class="col mt-3">
-                                <a href="{{ path('update_img', {id: image.id}) }}" class="card-link">
-                                    <i class="fa-solid fa-pen"></i>
-                                </a>
-                            </div>
-                            <div class="col">
-                                {% include "images/form/delete.html.twig" %}
-                            </div>
-                        </div>
-                    {% endif %}
+                    {% include "partials/update_btn.html.twig" %}
                 </div>
             {% endfor %}
         </div>
@@ -24,22 +13,46 @@
     <div class="col-md-6 d-none d-sm-block">
         <div class="row">
             {% for video in trick.videos %}
-            <div class="col-md-4">
-                <iframe width="150" height="100" src="https://www.youtube.com/embed/{{video.name}}" frameborder="0" allowfullscreen></iframe>
-                {% if app.user %}
-                    <div class="row">
-                        <div class="col mt-3">
-                            <a href="{{ path('update_video', {id: video.id}) }}" class="card-link">
-                                <i class="fa-solid fa-pen"></i>
-                            </a>
-                        </div>
-                        <div class="col">
-                            {% include "videos/form/delete.html.twig" %}
-                        </div>
-                    </div>
-                {% endif %}
-            </div>
+                <div class="col-md-4">
+                    <iframe width="150" height="100" src="https://www.youtube.com/embed/{{video.name}}" frameborder="0" allowfullscreen></iframe>
+                    
+                    {% include "partials/update_videos_btn.html.twig" %}
+                </div>
             {% endfor %}
         </div>
     </div>
+
+    <!-- Button trigger modal -->
+    <button type="button" class="mt-3 d-block d-sm-none btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+        Voir les Médias
+    </button>
+  
+    <!-- Modal -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">Médias</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h5>Liste des Images</h5>
+                {% for image in trick.images %}
+                    <img src="{{ asset('uploads/tricks/' ~ image.name) }}" class="img-fluid" alt="{{ image.name }}">
+                    {% include "partials/update_btn.html.twig" %}
+                {% endfor %}
+
+                <h5>Liste des Vidéos</h5>
+                {% for video in trick.videos %}
+                    <iframe style="width: 100%;" src="https://www.youtube.com/embed/{{video.name}}" frameborder="0" allowfullscreen></iframe>
+                    {% include "partials/update_videos_btn.html.twig" %}
+                {% endfor %}
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+        </div>
+    </div>
+  
 </div>
