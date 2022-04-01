@@ -2,11 +2,13 @@
 
 namespace App\Repository;
 
+use App\Entity\Tricks;
 use App\Entity\Comments;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Doctrine\ORM\OptimisticLockException;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\Tools\Pagination\Paginator;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @method Comments|null find($id, $lockMode = null, $lockVersion = null)
@@ -16,6 +18,8 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class CommentsRepository extends ServiceEntityRepository
 {
+    public const PAGINATOR_PER_PAGE = 4;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Comments::class);
@@ -43,6 +47,19 @@ class CommentsRepository extends ServiceEntityRepository
         if ($flush) {
             $this->_em->flush();
         }
+    }
+
+    public function getPaginationComments(Tricks $trick, int $offset): Paginator
+    {
+        $query = $this->createQueryBuilder('c')
+            ->andWhere('c.trick = :val')
+            ->setParameter('val', $trick)
+            ->orderBy('c.createdAt', 'DESC')
+            ->setMaxResults(self::PAGINATOR_PER_PAGE)
+            ->setFirstResult($offset)
+            ->getQuery();
+
+        return new Paginator($query);
     }
 
     // /**

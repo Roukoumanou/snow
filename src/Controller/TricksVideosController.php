@@ -55,9 +55,9 @@ class TricksVideosController extends AbstractController
      */
     public function delete(Request $request, Videos $video): Response
     {
-        $tokeId = (string) "'delete' . $video->getId()";
+        $tokeId = (string) 'delete' . $video->getId();
 
-        if ($this->isCsrfTokenValid($tokeId , $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid($tokeId, (string) $request->request->get('_token'))) {
             $lastVideo = $video->getId();
 
             $this->iVideos->deleteVideo($video);
