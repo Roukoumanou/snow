@@ -15,7 +15,7 @@
                         <div class="card">
                             <img style="height: 15rem;" src="{{ asset('uploads/tricks/' ~ cover) }}" class="card-img-top" alt="Image de la figure {{ trick.name }}">
                             
-                            <div class="card-body">
+                            <div class="card-body text-center">
                                 <a href="{{ path('trick_show', {id: trick.id}) }}" class="h5 card-title">{{ trick.name|title }}</a>
                                 {% include "partials/tricks_button.html.twig" %}
                             </div>
