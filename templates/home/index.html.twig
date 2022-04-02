@@ -13,7 +13,7 @@
                 {% endif %}
                     <div class="col-md-3 mb-2">
                         <div class="card">
-                            <img style="height: 15rem;" src="{{ asset('uploads/tricks/' ~ cover) }}" class="card-img-top" alt="Image de la figure {{ trick.name }}">
+                            <img style="height: 12rem;" src="{{ asset('uploads/tricks/' ~ cover) }}" class="card-img-top" alt="Image de la figure {{ trick.name }}">
                             
                             <div class="card-body text-center">
                                 <a href="{{ path('trick_show', {id: trick.id}) }}" class="h5 card-title">{{ trick.name|title }}</a>

@@ -17,72 +17,20 @@
                 {{ form_widget(form.group) }}
             </div>
         </div>
-            <button type="submit" class="btn btn-primary">Sauver</button>
+        <div class="row">
+            <div class="col-6">
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-5">
+                        {% include "tricks/form/delete.html.twig" %}
+                    </div>
+                    <div class="col-5">
+                        <button type="submit" class="btn btn-primary">Sauver</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         {{ form_end(form) }}
     </div>
-{% endblock %}
-
-{# gestion des images #}
-
-{% block _trick_form_images_widget %}
-{{ form_widget(form) }}
-
-<input type="hidden" id="widgets-counter" value="0">
-
-<div class="form-group">
-    <button type="button" class="btn btn-light" id="add-image">Ajouter</button>
-</div>
-    
-{% endblock %}
-
-{% block _trick_form_images_entry_widget %}
-<div class="form-group mb-2" id="block-{{id}}">
-    <div class="row">
-        <div class="col-10">
-            {{ form_widget(form.fileType) }}
-        </div>
-        <div class="col-2">
-            <button type="button" data-target="#block-{{ id }}" class="badge bg-danger" data-action="delete">X</button>
-        </div>
-    </div>
-</div>
-{% endblock %}
-
-{% block _trick_form_images_entry_row %}
-    {{ form_widget(form) }}
-{% endblock %}
-
-
-{# gestion des videos #}
-
-{% block _trick_form_videos_widget %}
-{{ form_widget(form) }}
-
-<input type="hidden" id="v-widgets-counter" value="0">
-
-<div class="form-group">
-    <button type="button" class="btn btn-light" id="add-video">Ajouter</button>
-</div>
-    
-{% endblock %}
-
-{% block _trick_form_videos_entry_widget %}
-<div class="form-group mb-2" id="block-{{id}}">
-    <div class="row">
-        <div class="col-10">
-            {{ form_widget(form.name) }}
-        </div>
-        <div class="col-2">
-            <button type="button" data-target="#block-{{ id }}" class="badge bg-danger" data-action="delete">X</button>
-        </div>
-    </div>
-</div>
-{% endblock %}
-
-{% block _trick_form_videos_entry_row %}
-    {{ form_widget(form) }}
-{% endblock %}
-
-{% block javascripts %}
-    {{ encore_entry_script_tags('tricks') }}
 {% endblock %}
