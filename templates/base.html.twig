@@ -25,7 +25,7 @@
         {% block javascripts %}{{ encore_entry_script_tags('app') }}{% endblock %}
     </head>
     <body>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light d-none d-sm-block">
             <div class="container-fluid">
               <a class="navbar-brand" href="{{ path('app_home') }}">SnowTricks</a>
               <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,18 @@
               </div>
             </div>
         </nav>
+        <nav class="navbar fixed-bottom navbar-light bg-light d-block d-sm-none">
+            <div class="container">
+                <a class="navbar-brand" href="{{ path('app_home') }}"><i class="fas fa-home"></i></a>
+                {% if app.user %}
+                    <a class="navbar-brand" href="{{ path('trick_new') }}"><i class="fa-solid fa-align-justify"></i></a>
+                    <a class="text-danger navbar-brand" href="{{ path('app_logout') }}"><i class="fa-solid fa-arrow-right-from-bracket"></i></a>
+                {% else %}
+                    <a class="navbar-brand" href="{{ path('app_login') }}">Connexion</a>
+                    <a class="navbar-brand" href="{{ path(('app_register')) }}">Inscription</a>
+                {% endif %}
+            </div>
+        </nav>
 
         <!-- Page Header-->
         <header class="masthead" style="background-image: url('home-bg.jpg')">
@@ -70,26 +82,26 @@
             </button>
         </header>
 
-      <div class="container">
-        {% for label, messages in app.flashes %}
-            {% for message in messages %}
-                <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
-                    <symbol id="info-fill" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
-                    </symbol>
-                </svg>
-                <div class="alert alert-dismissible fade show alert-{{ label }} d-flex align-items-center" role="alert">
-                    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
-                        {{ message|raw }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
+        <div class="container">
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+                        <symbol id="info-fill" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+                        </symbol>
+                    </svg>
+                    <div class="alert alert-dismissible fade show alert-{{ label }} d-flex align-items-center" role="alert">
+                        <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
+                            {{ message|raw }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
             {% endfor %}
-        {% endfor %}
-      </div>
+            {% block body %}{% endblock %}
+        </div>
 
-        {% block body %}{% endblock %}
         <button type="button" class="btn btn-danger btn-floating btn-lg" id="btn-back-to-top"
-            style="position: fixed; bottom: 20px; right: 20px; display: none;">
+            style="position: fixed; bottom: 50px; right: 15px; display: none;">
             <i class="fas fa-arrow-up"></i>
         </button>
 
