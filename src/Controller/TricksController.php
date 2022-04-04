@@ -25,7 +25,7 @@ class TricksController extends AbstractController
     }
 
     /**
-     * Permet d'enrégistration une figure
+     * Permet d'enrégistrer une figure
      * 
      * @Route("/trick-new", name="trick_new", methods={"GET", "POST"})
      * @IsGranted("ROLE_USER")
