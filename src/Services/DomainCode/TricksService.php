@@ -70,11 +70,18 @@ class TricksService implements TricksInterface
 
     public function delete(Tricks $trick): bool
     {
+        $demoImg = [
+            'snowboard-1-623a469ebabe8.jpg', 
+            'ninety-ninety-123-623a469ebae6b.jpg', 
+            'snowboard1170x508-623a469ebb39a.jpg'];
+
         // Suppression des images liées
         if (count($trick->getImages()) > 0) {
             foreach ($trick->getImages() as $image) {
                 $this->em->remove($image);
-                unlink(dirname(__DIR__, 3).'/public/uploads/tricks/'.$image->getName());
+                if (! in_array($image->getName(), $demoImg)) {
+                    unlink(dirname(__DIR__, 3).'/public/uploads/tricks/'.$image->getName());
+                }
             }
         }
 

@@ -8,3 +8,4 @@ install: ## Installation et démarrage de l'application
 	rm composer.lock
 	composer install
 	php -S localhost:8000 -t public
+	
