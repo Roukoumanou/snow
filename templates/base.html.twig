@@ -52,6 +52,7 @@
               </div>
             </div>
         </nav>
+        
         <nav class="navbar fixed-bottom navbar-light bg-light d-block d-sm-none">
             <div class="container">
                 <a class="navbar-brand" href="{{ path('app_home') }}"><i class="fas fa-home"></i></a>
@@ -98,6 +99,10 @@
                 {% endfor %}
             {% endfor %}
             {% block body %}{% endblock %}
+
+            <nav class="fs-6 bg-ligth navbar-light bg-light d-none d-sm-block">
+                <p>&copy; Amidou Roukoumanou 2022</p>
+            </nav>
         </div>
 
         <button type="button" class="btn btn-danger btn-floating btn-lg" id="btn-back-to-top"
