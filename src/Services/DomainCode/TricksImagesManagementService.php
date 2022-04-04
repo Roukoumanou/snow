@@ -24,27 +24,46 @@ class TricksImagesManagementService implements TricksImagesManagementInterface
 
     public function updateImage(Images $image, Form $form): bool
     {
+        
         /** @var UploadedFile $newImage */
         $newImage = $form->get('fileType')->getData();
-
-        $fileName = $this->uploader->upload($newImage);
         
-        $oldImage = $image->getName();
+        $fileName = $this->uploader->upload($newImage);
+        $oldImage = clone $image;
         
         $image->setName($fileName)
         ->setUpdatedAt(new \DateTimeImmutable());
         
         $this->em->flush();
+
+        $this->unlinkImage($oldImage);
         
-        unlink(dirname(__DIR__, 3).'/public/uploads/tricks/'.$oldImage);
 
         return true;
     }
 
     public function deleteImage(Images $image): bool
     {
+        $oldImage = $image;
+
         $this->em->remove($image);
         $this->em->flush();
+
+        $this->unlinkImage($oldImage);
+
+        return true;
+    }
+
+    private function unlinkImage(Images $image): bool
+    {
+        $demoImg = [
+            'snowboard-1-623a469ebabe8.jpg', 
+            'ninety-ninety-123-623a469ebae6b.jpg', 
+            'snowboard1170x508-623a469ebb39a.jpg'];
+
+        if (! in_array($image->getName(), $demoImg)) {
+            unlink(dirname(__DIR__, 3).'/public/uploads/tricks/'.$image->getName());
+        }
 
         return true;
     }

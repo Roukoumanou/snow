@@ -9,8 +9,8 @@
 {% endif %}
 
 {% block body %}
-    <div class="container">
-        <div class="mb-3 trick">
+    <div class="container mb-5">
+        <div class="trick">
             <div class="position-relative">
                 <div class="position-absolute top-0 end-0">
                     {% include "partials/tricks_button.html.twig" %}
@@ -57,7 +57,7 @@
             </div>
             
             <hr>
-            <div class="container">
+            <div class="container my-5">
                 <h5 class="m2">Discussions</h5>
                 {% for comment in comments %}
                 {% set author = comment.user %}
@@ -75,7 +75,7 @@
                     </div>
                 {% endfor %}
     
-                <nav aria-label="Page navigation example mb-4">
+                <nav aria-label="Page navigation example mb-5">
                     <ul class="pagination justify-content-center">
                         {% if previous >= 0 %}
                             <li class="page-item">
