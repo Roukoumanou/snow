@@ -1,4 +1,4 @@
-{% if app.user %}
+{% if app.user == video.trick.user %}
     <div class="row text-center">
         <div class="col mt-3">
             <a href="{{ path('update_video', {id: video.id}) }}" class="card-link">

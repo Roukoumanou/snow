@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use Exception;
 use App\Entity\Tricks;
 use App\Entity\Comments;
 use App\Form\TrickFormType;
@@ -12,6 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Services\Interfaces\CommentsInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -42,7 +44,11 @@ class TricksController extends AbstractController
 
         if($form->isSubmitted() && $form->isValid()){
             
-            $this->iTricks->new($trick, $form, $this->getUser());
+            try {
+                $this->iTricks->new($trick, $form, $this->getUser());
+            } catch (\Throwable $th) {
+                return new Exception("Il y a un problème avec le service de création de nouvelle figure");
+            }
 
             $this->addFlash(
                 'success', 'La figure a corrèctement été rajouté'
@@ -74,7 +80,11 @@ class TricksController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $iComment->addComment($comment, $trick, $this->getUser());
+            try {
+                $iComment->addComment($comment, $trick, $this->getUser());
+            } catch (\Throwable $th) {
+                return new Exception("Il y a un problème avec le service de gestion des commentaires");
+            }
 
             $this->addFlash('success', 'Commentaire ajouté avec succès');
 
@@ -94,6 +104,7 @@ class TricksController extends AbstractController
 
     /**
      * @Route("/trick-{id}-update", name="trick_update", methods={"GET", "POST"})
+     * @Security("is_granted('ROLE_USER') and user === trick.getUser()")
      *
      * @param Request $request
      * @param Tricks $trick
@@ -106,7 +117,11 @@ class TricksController extends AbstractController
 
         if($form->isSubmitted() && $form->isValid()){
 
-            $this->iTricks->update($trick, $form);
+            try {
+                $this->iTricks->update($trick, $form);
+            } catch (\Throwable $th) {
+                return new Exception("Il y a un problème avec le service de modification des figures");
+            }
 
             $this->addFlash(
                 'success', 'La figure a corrèctement été modifié'
@@ -124,6 +139,7 @@ class TricksController extends AbstractController
 
     /**
      * @Route("/trick-{id}-delete", name="trick_delete", methods={"POST"})
+     * @Security("is_granted('ROLE_USER') and user === trick.getUser()")
      *
      * @param Request $request
      * @param Tricks $trick
@@ -134,7 +150,11 @@ class TricksController extends AbstractController
         $tokenId = (string) 'delete' . $trick->getId();
 
         if ($this->isCsrfTokenValid($tokenId, (string) $request->request->get('_token'))) {
-            $this->iTricks->delete($trick);
+            try {;
+                $this->iTricks->delete($trick);
+            } catch (\Throwable $th) {
+                return new Exception("Il y a un problème avec le service de suppression des figures");
+            }
 
             $this->addFlash(
                 'success',

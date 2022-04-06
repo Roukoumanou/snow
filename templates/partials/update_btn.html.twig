@@ -1,4 +1,4 @@
-{% if app.user %}
+{% if app.user == image.trick.user %}
     <div class="row text-center mt-0">
         <div class="col mt-3">
             <a href="{{ path('update_img', {id: image.id}) }}" class="card-link">
