@@ -1,4 +1,4 @@
-{% if app.user %}
+{% if app.user == trick.user %}
     <div class="row">
         <div class="col mt-3">
             <a href="{{ path('trick_update', {id: trick.id}) }}" class="card-link">

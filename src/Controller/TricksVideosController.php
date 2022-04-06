@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Services\Interfaces\TricksVideosManagementInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class TricksVideosController extends AbstractController
@@ -20,6 +21,7 @@ class TricksVideosController extends AbstractController
 
     /**
      * @Route("/update-video-{id}", name="update_video", methods={"GET", "POST"})
+     * @Security("is_granted('ROLE_USER') and user === video.getTrick().getUser()")
      *
      * @param Request $request
      * @param Videos $video
@@ -48,6 +50,7 @@ class TricksVideosController extends AbstractController
 
     /**
      * @Route("/delete-video-{id}", name="delete_video", methods={"POST"})
+     * @Security("is_granted('ROLE_USER') and user === video.getTrick().getUser()")
      *
      * @param Request $request
      * @param Videos $video

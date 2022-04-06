@@ -1,12 +1,14 @@
 <?php
 namespace App\Controller;
 
+use Exception;
 use App\Entity\Images;
 use App\Form\ImagesFormType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Services\Interfaces\TricksImagesManagementInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 
@@ -21,6 +23,7 @@ class ImagesController extends AbstractController
 
     /**
      * @Route("/update-image-{id}", name="update_img", methods={"GET", "POST"})
+     * @Security("is_granted('ROLE_USER') and user === image.getTrick().getUser()")
      *
      * @param Request $request
      * @param Images $image
@@ -32,7 +35,11 @@ class ImagesController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->iIMages->updateImage($image, $form);
+            try {
+                $this->iIMages->updateImage($image, $form);
+            } catch (\Throwable $th) {
+                return new Exception("Il y a un problème avec le serve de modification des images");
+            }
 
             $this->addFlash('success', 'L\'image n° '.$image->getId().' a été correctement modifié');
 
@@ -47,6 +54,7 @@ class ImagesController extends AbstractController
 
     /**
      * @Route("/delete-image-{id}", name="delete_img", methods={"POST"})
+     * @Security("is_granted('ROLE_USER') and user === image.getTrick().getUser()")
      *
      * @param Request $request
      * @param Images $image
@@ -59,7 +67,11 @@ class ImagesController extends AbstractController
         if ($this->isCsrfTokenValid($tokenId, (string) $request->request->get('_token'))) {
             $lastImg = $image->getId();
 
-            $this->iIMages->deleteImage($image);
+            try {
+                $this->iIMages->deleteImage($image);
+            } catch (\Throwable $th) {
+                return new Exception("Il y a un problème avec le service de suppression des images");
+            }
 
             $this->addFlash(
                 'success',

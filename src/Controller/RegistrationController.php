@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use Exception;
 use App\Entity\Users;
 use App\Security\EmailVerifier;
 use App\Form\RegistrationFormType;
@@ -45,7 +46,11 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->iRegistration->register($form, $user);
+            try {
+                $this->iRegistration->register($form, $user);
+            } catch (\Throwable $th) {
+                throw new Exception("Il y a un problème avec le service des enrégistrements");
+            }
 
             $this->addFlash('success', 'Bienvenue parmi nous. Un mail vient de vous être envoyé');
 
