@@ -3,9 +3,8 @@ namespace App\Services\DomainCode;
 
 use App\Repository\TricksRepository;
 use App\Services\Interfaces\HomeInterface;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 class HomeService extends AbstractController implements HomeInterface
 {
@@ -16,10 +15,10 @@ class HomeService extends AbstractController implements HomeInterface
         $this->tricksrepository = $tricksrepository;
     }
 
-    public function home(Request $request): ?array
+    public function home(int $offset): Paginator
     {
-        $tricks = $this->tricksrepository->findAll();
+        $paginator = $this->tricksrepository->getPaginationTricks($offset);
         
-        return $tricks;
+        return $paginator;
     }
 }

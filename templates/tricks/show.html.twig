@@ -1,6 +1,6 @@
 {% extends "base.html.twig" %}
 
-{% set image = trick.images|first %}
+{% set image     = trick.images|first %}
 
 {% if image %}
     {% set cover = image.name %}
@@ -9,66 +9,88 @@
 {% endif %}
 
 {% block body %}
-    <div class="container">
-        <div class="trick_img mb-3">
-            <img style="height: 20rem;" src="{{ asset('uploads/tricks/' ~ cover) }}" class="card-img-top" alt="Cover">
+    <div class="container mb-5">
+        <div class="trick">
+            <div class="position-relative">
+                <div class="position-absolute top-0 end-0">
+                    {% include "partials/tricks_button.html.twig" %}
+                </div>
+                <div class="position-absolute top-50 start-50 translate-middle">
+                    <h1 style="width: 100%;">{{ trick.name|title }}</h1>
+                </div>
+                <img style="height: 20rem;" src="{{ asset('uploads/tricks/' ~ cover) }}" class="card-img-top" alt="Cover">
+            </div>
             {% include "partials/collections.html.twig" %}
-        </div>
 
-        <div class="trick_desc container">
-            <blockquote ="blockquote">
-                {{ trick.description|nl2br }}
-            </blockquote>
-        </div>
-
-        <div class="justify-content-center">
-            <div class="row post-meta">
-                <div class="col-4">
-                    publié le: {{ trick.createdAt ? trick.createdAt|date("d-m-Y") : ''}}
-                </div>
-                <div class="col-4">
-                    type de figure: {{ trick.group.name|title }}
-                </div>
-                {% if trick.updatedAt %}
-                    <div class="col-4">
-                        modifier le: {{ trick.updatedAt|date("d-m-Y") }}
-                    </div>
-                {% endif %}
+            <div class="text-justify mt-3">
+                <blockquote ="blockquote">
+                    {{ trick.description|nl2br }}
+                </blockquote>
             </div>
-        </div>
-
-        <hr>
-        <div class="row">
-            <div class="col-md-10">
-                {% if app.user %}
-                    {{ form_start(form) }}
-                        {{ form_widget(form) }}
-                        <button type="submit" class="btn btn-primary">Sauver</button>
-                    {{ form_end(form) }}
-                {% else %}
-                    <a href="{{ path('app_login') }}" class="btn btn-primary">Connectez-vous pour participer à la discusion</a>
-                {% endif %}
-            </div>
-        </div>
-        <hr>
-
-        <div class="container">
-            <h5 class="m2">Discussion</h5>
-        <div class="row bg-light m-3">
-            {% for comment in comments %}
-            {% set author = comment.user %}
-                <div class="row border border-secondary border-1 p-2 mb-2">
-                    <div class="col-2">
-                        <img src="{{ asset('uploads/avatar/' ~ author.avatar) }}" class="rounded-circle" style="width: 50px;"
-                        alt="Avatar" />
-                    </div>
-                    <div class="col-10">
-                        <p class="text-info mb-0 mt-0">{{ comment.user.name|title }} a écrit <span class="text-muted">le {{ comment.createdAt|date('d-m-Y') }}</span></p>
-                        {{ comment.message|nl2br }}
-                    </div>
+    
+            <div class="justify-content-center">
+                <div class="row text-center post-meta">
+                    <small class="col-4">
+                        publié: {{ trick.createdAt ? trick.createdAt|date("d-m-Y") : ''}}
+                    </small>
+                    <small class="col-4">
+                        catégorie: {{ trick.group.name|title }}
+                    </small>
+                    <small class="col-4">
+                        modifier: {{ trick.updatedAt ? trick.updatedAt|date("d-m-Y") : "" }}
+                    </small>
                 </div>
-            {% endfor %}
-        </div>
+            </div>
+    
+            <hr>
+            <div class="row">
+                <div class="col-12">
+                    {% if app.user %}
+                        {{ form_start(form) }}
+                            {{ form_widget(form) }}
+                            <button type="submit" class="btn btn-primary">Sauver</button>
+                        {{ form_end(form) }}
+                    {% else %}
+                        <a href="{{ path('app_login') }}" class="btn btn-primary">Connectez-vous pour participer à la discusion</a>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <hr>
+            <div class="container my-5">
+                <h5 class="m2">Discussions</h5>
+                {% for comment in comments %}
+                {% set author = comment.user %}
+                    <div class="row mb-2">
+                        <div class="col-3">
+                            <img src="{{ asset('uploads/avatar/' ~ author.avatar) }}" class="text-end rounded-circle" style="width: 60px;"
+                            alt="Avatar" />
+                        </div>
+                        <div class="col-9 border border-secondary border-1 text-justify">
+                            <p class="text-info fs-6 mb-0 mt-0">{{ comment.user.name|title }} a écrit <span class="text-muted">le {{ comment.createdAt|date('d-m-Y') }}</span></p>
+                            <p class="fs-5">
+                                {{ comment.message|nl2br }}
+                            </p>
+                        </div>
+                    </div>
+                {% endfor %}
+    
+                <nav aria-label="Page navigation example mb-5">
+                    <ul class="pagination justify-content-center">
+                        {% if previous >= 0 %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ path('trick_show', {id: trick.id, offset: previous }) }}">Précédent</a>
+                            </li>
+                        {% endif %}
+    
+                        {% if next < comments|length %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ path('trick_show', {id: trick.id, offset: next }) }}">Suivant</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
         </div>
     </div>
 {% endblock %}

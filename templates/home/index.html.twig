@@ -2,25 +2,45 @@
 
 {% block body %}
     <div class="container">
-        <div class="row" id="tricks">
-            {% for trick in tricks %}
-                {% set image = trick.images|first %}
-            {% if image %}
-                {% set cover = image.name %}
-            {% else %}
-                {% set cover = 'me-622e7cad5b1e1.jpg' %}
-            {% endif %}
-                <div class="col-md-3 mb-2">
-                    <div class="card">
-                        <img style="height: 15rem;" src="{{ asset('uploads/tricks/' ~ cover) }}" class="card-img-top" alt="Image de la figure {{ trick.name }}">
-                        
-                        <div class="card-body">
-                            <a href="{{ path('trick_show', {id: trick.id}) }}" class="h5 card-title">{{ trick.name|title }}</a>
-                            {% include "partials/tricks_button.html.twig" %}
+        {% if tricks|length > 0 %}
+            <div class="row" id="tricks">
+                {% for trick in tricks %}
+                    {% set image = trick.images|first %}
+                {% if image %}
+                    {% set cover = image.name %}
+                {% else %}
+                    {% set cover = 'snowboard-1-623a469ebabe8.jpg' %}
+                {% endif %}
+                    <div class="col-md-3 mb-2">
+                        <div class="card">
+                            <img style="height: 12rem;" src="{{ asset('uploads/tricks/' ~ cover) }}" class="card-img-top" alt="Image de la figure {{ trick.name }}">
+                            
+                            <div class="card-body text-center">
+                                <a href="{{ path('trick_show', {id: trick.id}) }}" class="h5 card-title">{{ trick.name|title }}</a>
+                                {% include "partials/tricks_button.html.twig" %}
+                            </div>
                         </div>
                     </div>
-                </div>
-            {% endfor %}
-        </div>
+                {% endfor %}
+
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-center">
+                        {% if previous >= 0 %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ path('app_home', {offset: previous }) }}">Précédent</a>
+                            </li>
+                        {% endif %}
+
+                        {% if next < tricks|length %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ path('app_home', {offset: next }) }}">Suivant</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        {% else %}
+        <div>Pas de figure pour le moment</div>
+        {% endif %}
     </div>
 {% endblock %}

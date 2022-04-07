@@ -105,7 +105,7 @@ class AppFixtures extends Fixture
     private function getImages(): array
     {
         $imgs = [
-                'snowboard-1-623a469ebabe8.jpg',
+                'snowboard-1-623a469ebabe8.jpg', 
                 'ninety-ninety-123-623a469ebae6b.jpg',
                 'snowboard1170x508-623a469ebb39a.jpg'
             ];
@@ -118,9 +118,9 @@ class AppFixtures extends Fixture
     private function getVideosUrl(): array
     {
         return [
-            'https://www.youtube.com/watch?v=aPhYdeitDtA',
-            'https://www.youtube.com/watch?v=pYJbes1VChQ',
-            'https://www.youtube.com/watch?v=PmFJ-MG9VPo'
+            'aPhYdeitDtA',
+            'pYJbes1VChQ',
+            'PmFJ-MG9VPo'
         ];
     }
 }

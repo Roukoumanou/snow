@@ -2,11 +2,13 @@
 
 namespace App\Controller;
 
+use App\Repository\TricksRepository;
 use App\Services\Interfaces\HomeInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class HomeController extends AbstractController
 {
@@ -25,11 +27,19 @@ class HomeController extends AbstractController
      */
     public function index(Request $request): Response
     {
-        $tricks = $this->iHome->home($request);
+        $offset = max(0, $request->query->getInt('offset', 0));
+        
+        try {
+            $tricks = $this->iHome->home($offset);
+        } catch (\Throwable $th) {
+            return new Exception("Il y a un problème avec le service home");
+        }
 
         return $this->render('home/index.html.twig', [
             'title' => 'Liste des Figures',
-            'tricks' => $tricks
+            'tricks' => $tricks,
+            'previous' => $offset - TricksRepository::PAGINATOR_PER_PAGE,
+            'next' => min(count($tricks), $offset + TricksRepository::PAGINATOR_PER_PAGE),
         ]);
     }
 }

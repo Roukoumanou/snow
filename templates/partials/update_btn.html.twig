@@ -1,0 +1,12 @@
+{% if app.user == image.trick.user %}
+    <div class="row text-center mt-0">
+        <div class="col mt-3">
+            <a href="{{ path('update_img', {id: image.id}) }}" class="card-link">
+                <i class="fa-solid fa-pen"></i>
+            </a>
+        </div>
+        <div class="col">
+            {% include "images/form/delete.html.twig" %}
+        </div>
+    </div>
+{% endif %}

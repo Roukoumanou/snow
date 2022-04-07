@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use Exception;
 use App\Form\ChangePasswordFormType;
 use App\Form\ResetPasswordRequestFormType;
 use App\Services\Interfaces\MailerInterface;
@@ -55,9 +56,7 @@ class ResetPasswordController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->processSendingPasswordResetEmail(
-                $form->get('email')->getData(),
-                $this->mailer,
-                $this->translator 
+                $form->get('email')->getData()
             );
         }
 
@@ -127,7 +126,11 @@ class ResetPasswordController extends AbstractController
             // A password reset token should be used only once, remove it.
             $this->resetPasswordHelper->removeResetRequest($token);
 
-            $this->iResetPassword->reset($user, $form, $token);
+            try {
+                $this->iResetPassword->reset($user, $form, $token);
+            } catch (\Throwable $th) {
+                throw new Exception("Il y un problème dans le service de changement de mot de passe");
+            }
 
             // The session is cleaned up after the password has been changed.
             $this->cleanSessionAfterReset();
