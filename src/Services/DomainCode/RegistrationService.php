@@ -44,7 +44,7 @@ class RegistrationService implements RegistrationInterface
      */
     public function register(Form $form, Users $user): bool
     {
-        /** @var UploadedFile $brochureFile */
+        /** @var UploadedFile $avatar */
         $avatar = $form->get('avatar')->getData();
         $avatar = $this->uploader->uploadAvatar($avatar);
 

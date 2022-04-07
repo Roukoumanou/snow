@@ -7,5 +7,6 @@ install: ## Installation et démarrage de l'application
 	rm -Rf var
 	rm composer.lock
 	composer install
+	yarn run build
 	php -S localhost:8000 -t public
 	
