@@ -21,14 +21,14 @@
             <div class="col-6">
                 <div class="row">
                     <div class="col-5">
-                        {% include "tricks/form/delete.html.twig" %}
-                    </div>
-                    <div class="col-5">
                         <button type="submit" class="btn btn-primary">Sauver</button>
+                    </div>
+        {{ form_end(form) }}
+                    <div class="col-5">
+                        {% include "tricks/form/delete.html.twig" %}
                     </div>
                 </div>
             </div>
         </div>
-        {{ form_end(form) }}
     </div>
 {% endblock %}

@@ -86,8 +86,6 @@ class TricksController extends AbstractController
                 return new Exception("Il y a un problème avec le service de gestion des commentaires");
             }
 
-            $this->addFlash('success', 'Commentaire ajouté avec succès');
-
             return $this->redirectToRoute('trick_show', ['id' => $trick->getId()]);
         }
 
@@ -116,7 +114,7 @@ class TricksController extends AbstractController
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){
-
+            
             try {
                 $this->iTricks->update($trick, $form);
             } catch (\Throwable $th) {
